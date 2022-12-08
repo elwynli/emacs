@@ -1,4 +1,4 @@
-# My `.emacs.d` backup
+# My `~/.emacs.d/` backup
 
 Windows Emacs 29.0.50
 ```
