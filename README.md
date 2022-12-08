@@ -2,4 +2,4 @@
 
 Windows
 
-C:\Users\ElwynLi\AppData\Roaming\.emacs.d
+C:\Users\ElwynLi\AppData\Roaming\\.emacs.d
