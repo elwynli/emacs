@@ -1,6 +1,6 @@
-# .emacs.d backup
+# my .emacs.d backup
 
-Windows
+Windows Emacs 29
 ```
 C:\Users\ElwynLi\AppData\Roaming\.emacs.d
 ```
