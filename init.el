@@ -13,6 +13,13 @@
    '(cnfonts markdown-mode auto-org-md page-break-lines projectile all-the-icons dashboard which-key rust-mode))
  '(tool-bar-mode nil))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 
 ;;========================================
 ;; 打开配置函数
@@ -23,12 +30,14 @@
 
 
 ;;========================================
-;; C+J
+;; kl-new-line
 ;;========================================
-(global-set-key (kbd "C-J") '(lambda ()
+(defun kl-new-line()
   (interactive)
   (move-end-of-line 1)
-  (newline)))
+  (newline))
+  
+
 
 ;;========================================
 ;; 简写词汇
@@ -66,7 +75,7 @@
 ;; encoding
 ;;========================================
 (set-language-environment 'Chinese-GBK)
-(prefer-coding-system 'gb18030)
+;; (prefer-coding-system 'gb18030)
 (prefer-coding-system 'utf-8-auto)
 
 ;; (setq locale-coding-system 'utf-8)
@@ -114,7 +123,6 @@
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
 
-
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (load-theme 'zenburn t)
 
@@ -122,16 +130,30 @@
 (save-place-mode 1)
 
 
-
 ;;========================================
 ;; package
 ;;========================================
+
+;;(push "~/.emacs.d/lisp" load-path)
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+
+(let ((default-directory "~/.emacs.d/lisp/"))
+  (normal-top-level-add-subdirs-to-load-path))
+
 (require 'package)
 (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                         ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-(push "~/.emacs.d/lisp" load-path)
-(let ((default-directory  "~/.emacs.d/lisp/")) (normal-top-level-add-subdirs-to-load-path))
+			 ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+			 ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 (package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
+(setq use-package-always-ensure t)
+
 (setq default-directory "d:/code/emacs/")
 (setq command-line-default-directory "d:/code/emacs/")
 
@@ -151,33 +173,54 @@
 (define-key cnfonts-mode-map (kbd "C--") #'cnfonts-decrease-fontsize)
 (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
 
+
+;; (use-package all-the-icons
+;;   :ensure t)
+
+;;========================================
+;; neotree
+;;========================================
+
+;; (when (display-graphic-p)
+;;   (require 'all-the-icons))
+;; or
+(use-package all-the-icons
+  :if (display-graphic-p))
+
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
+;;(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+
+
+
 ;;========================================
 ;; dashboard 会拖慢
 ;;========================================
 (require 'dashboard)
 (dashboard-setup-startup-hook) 
-(setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
-(setq dashboard-startup-banner 1)
-(setq dashboard-center-content t)
-(setq dashboard-show-shortcuts nil)
-(setq dashboard-items '((recents  . 5)
+
+(setq dashboard-banner-logo-title "Welcome to Emacs Dashboard"
+      dashboard-startup-banner 'official
+      dashboard-center-content t
+      dashboard-show-shortcuts nil
+      dashboard-items '((recents  . 5)
                         (bookmarks . 5)
                         (projects . 5)
                         (agenda . 5)
-                        (registers . 5)))
-(setq dashboard-set-heading-icons t)
-(setq dashboard-set-file-icons t)
+                        (registers . 5))
+      dashboard-set-heading-icons t
+      dashboard-set-file-icons t
+      dashboard-set-navigator t)
+(dashboard-modify-heading-icons '((recent . "file-text")
+				  (bookmarks . "book")))
 
-;;========================================
-;; neotree
-;;========================================
-(require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
-;;(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(page-break-lines-mode)
 
-;;(when (display-graphic-p) require 'all-the-icons))
-;;or
-;;(use-package all-the-icons :if (display-graphic-p))
+(projectile-mode +1)
+;; Recommended keymap prefix on macOS
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+;; Recommended keymap prefix on Windows/Linux
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 
 ;;========================================
@@ -307,8 +350,9 @@
 
 (global-set-key (kbd "<f2>") 'open-init-file)
 (global-set-key (kbd "<f3>") 'eval-buffer)
+(global-set-key (kbd "<f11>") 'quick-copy-line)
+(global-set-key (kbd "M-<f11>") 'quick-cut-line)
 (global-set-key (kbd "C-c C-d") 'insert-current-date-time)
 (global-set-key (kbd "C-c C-t") 'insert-current-time)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
-(global-set-key (kbd "<f11>") 'quick-copy-line)
-(global-set-key (kbd "M-<f11>") 'quick-cut-line)
+(global-set-key (kbd "C-J") 'kl-new-line)
